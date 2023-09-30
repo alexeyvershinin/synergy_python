@@ -1,3 +1,5 @@
+from utils import randbool, randcell, randcell2
+
 # 0 - поле
 # 1 - дерево
 # 2 - река
@@ -9,11 +11,23 @@ CELL_TYPES = '🟩🌲🌊🏥🛠'
 
 class Map:
 
-    def generate_rivers(self):
-        pass
+    def generate_river(self, length):
+        rc = randcell(self.width, self.height)
+        rx, ry = rc[0], rc[1]
+        self.cells[rx][ry] = 2
+        while length > 0:
+            rc2 = randcell2(rx, ry)
+            rx2, ry2 = rc2[0], rc2[1]
+            if self.check_bounds(rx2, ry2):
+                self.cells[rx2][ry2] = 2
+                rx, ry = rx2, ry2
+                length -= 1
 
-    def generate_forest(self):
-        pass
+    def generate_forest(self, r, mxr):
+        for ri in range(self.height):
+            for ci in range(self.width):
+                if randbool(r, mxr):
+                    self.cells[ri][ci] = 1
 
     def print_map(self):
         print('⬛' * (self.width + 2))
@@ -37,4 +51,6 @@ class Map:
 
 
 tmp = Map(20, 10)
+# tmp.generate_forest(3, 10)
+tmp.generate_river(10)
 tmp.print_map()
