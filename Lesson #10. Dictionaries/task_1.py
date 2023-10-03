@@ -4,9 +4,8 @@ def main():
 
     pets_count = 1
     while pets_count <= pets_number:
-        pet_info = {}
-
         print(f'Заполните информацию о питомце № {pets_count}')
+        pet_info = {}
 
         pet_name = input('Имя питомца: ')
         pet_type = input('Вид питомца: ')
@@ -35,8 +34,9 @@ def main():
                 else:
                     age_string = 'лет'
 
-            print(f'Это {pet_type} по кличке "{pet_name}". Возраст питомца: {age} {age_string}. Имя владельца: {owner_name}')
+            print(f'Это {pet_info["Вид питомца"]} по кличке "{pet_name}". Возраст питомца: {age} {age_string}. Имя владельца: {pet_info["Имя владельца"]}')
 
 
 if __name__ == '__main__':
     main()
+
