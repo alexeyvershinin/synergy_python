@@ -32,7 +32,10 @@ def main():
 
             moves = (distance_x + distance_y) / self.s
 
-            return f'Черепашке потребуется {int(moves)} шагов, чтобы добраться до ({x2}, {y2})'
+            if moves > int(moves):
+                return f'Черепашке потребуется {int(moves) + 1} шагов, чтобы добраться до ({x2}, {y2})'
+            else:
+                return f'Черепашке потребуется {int(moves)} шагов, чтобы добраться до ({x2}, {y2})'
 
     turtle = Turtle()
 
