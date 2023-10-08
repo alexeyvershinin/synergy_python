@@ -8,9 +8,38 @@ from utils import randbool, randcell, randcell2
 # 5 - пожар
 
 CELL_TYPES = '🟩🌲🌊🏥🛠🔥'
+TREE_BONUS = 100
+UPGRADE_COST = 500
 
 
 class Map:
+
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.cells = [[0 for _ in range(width)] for _ in range(height)]
+        self.generate_forest(3, 10)
+        self.generate_river(10)
+        self.generate_river(10)
+        self.generate_upgrade_shop()
+
+    def check_bounds(self, x, y):
+        if x < 0 or y < 0 or x >= self.height or y >= self.width:
+            return False
+        return True
+
+    def print_map(self, helico):
+        print('⬛' * (self.width + 2))
+        for ri in range(self.height):
+            print('⬛', end='')
+            for ci in range(self.width):
+                cell = self.cells[ri][ci]
+                if helico.x == ri and helico.y == ci:
+                    print('🚁', end='')
+                elif 0 <= cell <= len(CELL_TYPES):
+                    print(CELL_TYPES[cell], end='')
+            print('⬛')
+        print('⬛' * (self.width + 2))
 
     def generate_river(self, length):
         rc = randcell(self.width, self.height)
@@ -36,15 +65,10 @@ class Map:
         if self.cells[cx][cy] == 0:
             self.cells[cx][cy] = 1
 
-    def print_map(self):
-        print('⬛' * (self.width + 2))
-        for row in self.cells:
-            print('⬛', end='')
-            for cell in row:
-                if 0 <= cell <= len(CELL_TYPES):
-                    print(CELL_TYPES[cell], end='')
-            print('⬛')
-        print('⬛' * (self.width + 2))
+    def generate_upgrade_shop(self):
+        c = randcell(self.width, self.height)
+        cx, cy = c[0], c[1]
+        self.cells[cx][cy] = 4
 
     def add_fire(self):
         c = randcell(self.width, self.height)
@@ -56,17 +80,19 @@ class Map:
         for ri in range(self.height):
             for ci in range(self.width):
                 cell = self.cells[ri][ci]
-                if cell ==5:
+                if cell == 5:
                     self.cells[ri][ci] = 0
-        for i in range(5):
+        for i in range(10):
             self.add_fire()
 
-    def check_bounds(self, x, y):
-        if x < 0 or y < 0 or x >= self.height or y >= self.width:
-            return False
-        return True
-
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.cells = [[0 for _ in range(width)] for _ in range(height)]
+    def process_helicopter(self, helico):
+        c = self.cells[helico.x][helico.y]
+        if c == 2:
+            helico.tank = helico.mxtank
+        elif c == 5 and helico.tank > 0:
+            helico.tank -= 1
+            helico.score += TREE_BONUS
+            self.cells[helico.x][helico.y] = 1
+        elif c == 4 and helico.score >= UPGRADE_COST:
+            helico.mxtank += 1
+            helico.score -= UPGRADE_COST
