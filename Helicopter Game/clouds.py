@@ -17,3 +17,9 @@ class Clouds:
                         self.cells[i][j] = 2
                 else:
                     self.cells[i][j] = 0
+
+    def export_data(self):
+        return {'cells': self.cells}
+
+    def import_data(self, data):
+        self.cells = data['cells'] or [[0 for _ in range(self.width)] for _ in range(self.height)]
